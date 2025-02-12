@@ -1,0 +1,24 @@
+{
+    "comments": {
+        "blockComment": ["#comment:", "#endcomment"]
+    },
+    "brackets": [
+        ["(", ")"]
+    ],
+    "autoClosingPairs": [
+        ["(", ")"],
+        ["\"", "\""],
+        ["<!--", "-->"]
+    ],
+    "surroundingPairs": [
+        ["(", ")"],
+        ["\"", "\""],
+        ["<!--", "-->"]
+    ],
+    "folding": {
+        "markers": {
+            "start": "#.+:",
+            "end": "#end.+"
+        }
+    }
+}

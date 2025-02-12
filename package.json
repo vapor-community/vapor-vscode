@@ -1,0 +1,134 @@
+{
+  "name": "vapor-vscode",
+  "displayName": "Vapor",
+  "description": "Vapor web framework support for Visual Studio Code.",
+  "version": "0.0.1",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.97.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Other",
+    "Snippets",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "vapor",
+    "swift",
+    "server",
+    "web",
+    "framework"
+  ],
+  "activationEvents": [
+    "onLanguage:swift",
+    "workspaceContains:Package.swift"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "leaf",
+        "aliases": [
+          "Leaf"
+        ],
+        "extensions": [
+          ".leaf"
+        ],
+        "icon": {
+          "light": "./images/leaf-light.png",
+          "dark": "./images/leaf-light.png"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "leaf",
+        "scopeName": "text.html.leaf",
+        "path": "./syntaxes/leaf.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "swift",
+        "path": "./snippets/vapor.code-snippets"
+      },
+      {
+        "language": "leaf",
+        "path": "./snippets/leaf.code-snippets"
+      }
+    ],
+    "commands": [
+      {
+        "command": "vapor-vscode.createNewProject",
+        "title": "Create New Project...",
+        "category": "Vapor"
+      }
+    ],
+    "configuration": {
+      "title": "Vapor",
+      "properties": {
+        "vapor-vscode.template.url": {
+          "type": "string",
+          "default": "",
+          "description": "The URL of a Git repository to use as a template.",
+          "order": 1
+        },
+        "vapor-vscode.template.branch": {
+          "type": "string",
+          "default": "",
+          "description": "Template repository branch to use.",
+          "order": 2
+        },
+        "vapor-vscode.template.manifest": {
+          "type": "string",
+          "default": "",
+          "description": "The path of the manifest file.",
+          "order": 3
+        },
+        "vapor-vscode.git.repo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add a Git repository to the project folder.",
+          "order": 4
+        },
+        "vapor-vscode.git.commit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add a first commit to the newly created repo.",
+          "order": 5
+        }
+      }
+    },
+    "viewsWelcome": [
+      {
+        "view": "explorer",
+        "contents": "You can also create a new Vapor project.\n[Create Vapor Project](command:vapor-vscode.createNewProject)",
+        "when": "workspaceFolderCount == 0"
+      }
+    ]
+  },
+  "extensionDependencies": [
+    "swiftlang.swift-vscode"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.97.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+    "eslint": "^9.19.0",
+    "typescript": "^5.7.3",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
