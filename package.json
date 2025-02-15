@@ -15,11 +15,12 @@
   ],
   "keywords": [
     "vapor",
+    "leaf",
     "swift",
     "server",
-    "web",
     "framework"
   ],
+  "preview": true,
   "activationEvents": [
     "onLanguage:swift",
     "workspaceContains:Package.swift"

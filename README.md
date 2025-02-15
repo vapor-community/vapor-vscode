@@ -22,12 +22,7 @@ This extension contributes the following settings to personalize the Vapor proje
 * `vapor-vscode.template.manifest`: The path of the manifest file.
 * `vapor-vscode.git.repo`: Add a Git repository to the project folder.
 * `vapor-vscode.git.commit`: Add a first commit to the newly created repo.
+
 ## Known Issues
 
-Project creation requires the latest version of the Vapor Toolbox.
-
-## Release Notes
-
-### [Unreleased]
-
-Initial release of `vapor-vscode`.
+Syntax highlighting of Leaf tags embedded in HTML attributes has some limitations.
