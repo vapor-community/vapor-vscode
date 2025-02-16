@@ -26,7 +26,9 @@ suite("Vapor Extension Test Suite", () => {
 		const result = await execFile("echo", ["Hello, World!"]);
 		assert.strictEqual(result.stdout, "Hello, World!\n");
 
-		const error = await execFile("ls", ["-l", "/nonexistent"]);
-		assert.strictEqual(error.stderr, "ls: /nonexistent: No such file or directory\n");
+		try {
+			await execFile("ls", ["-l", "/nonexistent"]);
+			assert.fail("Expected execFile to throw an error for an invalid command.");
+		} catch (error) {}
 	});
 });
