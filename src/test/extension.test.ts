@@ -1,23 +1,32 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
 import { buildDynamicFlags } from "../commands/manifestVariables";
+import { execFile } from "../utilities/utilities";
 
 suite("Vapor Extension Test Suite", () => {
 	vscode.window.showInformationMessage("Start all tests.");
 
 	test("buildDynamicFlags", () => {
-		const responses = '{"fluent":{"db":"Postgres (Recommended)","model":{"name":"TestModel","migrate":true,"extras":{"authentication":true}}},"leaf":true,"jwt":true,"deploy":"Heroku","hello":"Ciao, mamma!"}';
+		const responses = '{"fluent":{"db":"Postgres (Recommended)","model":{"name":"TestModel","migrate":true,"extras":{"authentication":true}}},"leaf":true,"jwt":false,"deploy":"Heroku","hello":"Ciao, mamma!"}';
 		const expectedFlags = [
 			"--fluent.db", "Postgres (Recommended)",
 			"--fluent.model.name", "TestModel",
 			"--fluent.model.migrate",
 			"--fluent.model.extras.authentication",
 			"--leaf",
-			"--jwt",
+			"--no-jwt",
 			"--deploy", "Heroku",
 			"--hello", "Ciao, mamma!"
 		];
 
 		assert.deepStrictEqual(buildDynamicFlags(JSON.parse(responses)), expectedFlags);
+	});
+
+	test("execFile", async () => {
+		const result = await execFile("echo", ["Hello, World!"]);
+		assert.strictEqual(result.stdout, "Hello, World!\n");
+
+		const error = await execFile("ls", ["-l", "/nonexistent"]);
+		assert.strictEqual(error.stderr, "ls: /nonexistent: No such file or directory\n");
 	});
 });
