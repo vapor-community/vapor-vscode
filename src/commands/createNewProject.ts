@@ -72,7 +72,7 @@ export async function createNewProject() {
 			cancellable: false
 		}, async (progress, token) => {
 			progress.report({ increment: 0, message: "Collecting template variables..." });
-			const variablesJSONOutput = await execVapor([projectName, "--json", ...buildFlags], { cwd: selectedFolder[0].fsPath });
+			const variablesJSONOutput = await execVapor([projectName, "--dump-variables", ...buildFlags], { cwd: selectedFolder[0].fsPath });
 			const variablesJSON = JSON.parse(variablesJSONOutput.stdout);
 
 			progress.report({ increment: 30, message: "Prompting for variables..." });

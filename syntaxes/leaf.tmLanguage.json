@@ -106,6 +106,6 @@
     },
     "scopeName": "text.html.leaf",
     "fileTypes": ["leaf"],
-    "foldingStartMarker": "#.+:",
+    "foldingStartMarker": "#(?!else:|elseif\\().+:",
     "foldingStopMarker": "#end.+"
 }

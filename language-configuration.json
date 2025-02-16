@@ -17,7 +17,7 @@
     ],
     "folding": {
         "markers": {
-            "start": "#.+:",
+            "start": "#(?!else:|elseif\\().+:",
             "end": "#end.+"
         }
     }
