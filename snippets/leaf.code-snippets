@@ -1,66 +1,48 @@
 {
-    "tag": {
+    "Variable Tag": {
         "prefix": "#tag",
-        "description": "Empty tag",
+        "description": "Embed a value into the template",
         "body": [
             "#($1)"
         ]
     },
-    "extend leaf": {
+    "Extend template": {
         "prefix": "#extend",
-        "description": "Extend from other Leaf file",
+        "description": "Copy the contents of one template into another",
         "body": [
-            "#extend(\"${1:file}\")"
+            "#extend(\"${1:template}\")"
         ]
     },
-    "extend with block": {
-        "prefix": "#extendblock",
-        "description": "Extend with a block from other Leaf file",
+    "Export and Extend": {
+        "prefix": "#extend-export",
+        "description": "Construct a child template, then extends the parent template",
         "body": [
-            "#extend(\"${1:file}\"):",
-            "\t$0",
-            "#endextend"
-        ]
-    },
-    "export leaf": {
-        "prefix": "#export",
-        "description": "Export a Leaf block",
-        "body": [
-            "#export(\"${1:tag}\"):",
-            "\t$0",
-            "#endexport"
-        ]
-    },
-    "extend and export": {
-        "prefix": "#extendexport",
-        "description": "Extend and export from other Leaf file",
-        "body": [
-            "#extend(\"${1:file}\"):",
-            "\t#export(\"${2:tag}\"):",
+            "#extend(\"${1:template}\"):",
+            "\t#export(\"${2:body}\"):",
             "\t\t$0",
             "\t#endexport",
             "#endextend"
         ]
     },
-    "import leaf": {
+    "Import content": {
         "prefix": "#import",
-        "description": "Import an exported Leaf block onto here",
+        "description": "Fetch the content passed to an #extend tag",
         "body": [
-            "#import(\"${1:file}\")"
+            "#import(\"${1:body}\")"
         ]
     },
-    "for loop": {
+    "for-in loop": {
         "prefix": "#for",
-        "description": "For loop",
+        "description": "Iterate over an array of items",
         "body": [
-            "#for(${1:object} in ${2:array}):",
+            "#for(${1:element} in ${2:array}):",
             "\t$0",
             "#endfor"
         ]
     },
     "if condition": {
         "prefix": "#if",
-        "description": "If condition",
+        "description": "Evaluate a condition",
         "body": [
             "#if(${1:bool}):",
             "\t$0",
@@ -69,29 +51,29 @@
     },
     "if-else condition": {
         "prefix": "#if-else",
-        "description": "If-else condition",
-        "body": [
-            "#if(${1:bool}):",
-            "\t$0",
-            "#else:",
-            "\t$1",
-            "#endif"
-        ]
-    },
-    "if-else-if condition": {
-        "prefix": "#if-else-if",
-        "description": "If-else-if condition",
+        "description": "Evaluate a condition with an `else` block",
         "body": [
             "#if(${1:bool}):",
             "\t$2",
-            "#elseif($3):",
+            "#else:",
+            "\t$3",
+            "#endif"
+        ]
+    },
+    "if-elseif condition": {
+        "prefix": "#if-elseif",
+        "description": "Evaluate a condition with an `else if` block",
+        "body": [
+            "#if(${1:bool}):",
+            "\t$2",
+            "#elseif($3:bool):",
             "\t$4",
             "#endif"
         ]
     },
     "comment": {
         "prefix": "#comment",
-        "description": "Comment",
+        "description": "Block comment",
         "body": [
             "#comment:",
             "\t$0",
@@ -100,53 +82,74 @@
     },
     "count": {
         "prefix": "#count",
-        "description": "Count tag returns the number of items in an array",
+        "description": "Return the number of items in an array",
         "body": [
             "#count(${1:array})"
         ]
     },
     "lowercased": {
         "prefix": "#lowercased",
-        "description": "Lowercased tag lowercases all letters in a string.",
+        "description": "Lowercase all letters in a string",
         "body": [
             "#lowercased(${1:string})"
         ]
     },
     "uppercased": {
         "prefix": "#uppercased",
-        "description": "Uppercased tag uppercases all letters in a string.",
+        "description": "Uppercase all letters in a string",
         "body": [
             "#uppercased(${1:string})"
         ]
     },
     "capitalized": {
         "prefix": "#capitalized",
-        "description": "Capitalized tag uppercases the first letter in each word of a string and lowercases the others.",
+        "description": "Uppercase the first letter in each word of a string and lowercase the others",
         "body": [
             "#capitalized(${1:string})"
         ]
     },
     "contains": {
         "prefix": "#contains",
-        "description": "Contains tag accepts an array and a value as its two parameters, and returns true if the array in parameter one contains the value in parameter two.",
+        "description": "Accept an array and a value as its two parameters, and return true if the array in parameter one contains the value in parameter two",
         "body": [
-            "#if(contains(${1:value}, ${2:array})):",
+            "#if(contains(${1:array}, ${2:value})):",
             "\t$0",
             "#endif"
         ]
     },
     "date": {
         "prefix": "#date",
-        "description": "Date tag formats dates into a readable string.",
+        "description": "Format dates into a readable string",
         "body": [
-            "#date(${1:string})"
+            "#date(${1:date})"
         ]
     },
     "date-format": {
         "prefix": "#date-format",
-        "description": "Date tag formats dates into a custom date formatter string as the second argument.",
+        "description": "Format dates into a readable string with a custom date formatter",
         "body": [
-            "#date(${1:string}, \"${2:format}\")"
+            "#date(${1:date}, \"${2:format}\")"
         ]
-    }
+    },
+    "date-timezone": {
+        "prefix": "#date-timezone",
+        "description": "Format dates into a readable string with a custom date formatter and a custom timezone",
+        "body": [
+            "#date(${1:date}, \"${2:format}\", \"${3:timeZoneID}\")"
+        ]
+    },
+    "unsafeHTML": {
+        "prefix": "#unsafeHTML",
+        "description": "Embed a value into the template without escaping any HTML in it",
+        "body": [
+            "#unsafeHTML(${1:variable})"
+        ]
+    },
+    "dumpContext": {
+        "prefix": "#dumpContext",
+        "description": "Render the whole context to a human readable string",
+        "body": [
+            "#dumpContext"
+        ]
+    },
 }

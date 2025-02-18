@@ -7,7 +7,7 @@
             "\t${3:statements}",
             "}"
         ],
-        "description": "Vapor: Endpoint function"
+        "description": "Endpoint function to use in `RouteCollection`s"
     },
     "AsyncMiddleware": {
         "prefix": "middleware",
@@ -18,27 +18,27 @@
             "\t}",
             "}"
         ],
-        "description": "Vapor: AsyncMiddleware"
+        "description": "AsyncMiddleware structure"
     },
     "req.parameters.get": {
         "prefix": "parameter",
         "body": [
             "req.parameters.get(\"${1:parameterName}\")"
         ],
-        "description": "Vapor: Extract parameter from request path"
+        "description": "Extract parameter from request path"
     },
     "try req.content.decode": {
         "prefix": "decode",
         "body": [
             "try req.content.decode(${1:Type}.self)"
         ],
-        "description": "Vapor: Decode request content"
+        "description": "Decode request content"
     },
     "throw Abort": {
         "prefix": "abort",
         "body": [
             "throw Abort(.${1:code})"
         ],
-        "description": "Vapor: throw Abort"
+        "description": "Throw an HTTP error"
     }
 }

@@ -40,7 +40,7 @@
           "light": "./images/leaf-light.png",
           "dark": "./images/leaf-light.png"
         },
-        "configuration": "./language-configuration.json"
+        "configuration": "./leaf.language-configuration.json"
       }
     ],
     "grammars": [
