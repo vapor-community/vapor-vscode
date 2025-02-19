@@ -4,16 +4,6 @@ import { execVapor } from "../utilities/utilities";
 import { promptForVariables, buildDynamicFlags } from "./manifestVariables";
 
 export async function createNewProject() {
-	// Check if the Vapor Toolbox is installed
-	/*
-	try {
-		await execVapor(["--version"]);
-	} catch (error) {
-		vscode.window.showErrorMessage("Vapor Toolbox is not installed. Please install it before creating a new project.");
-		return;
-	}
-	*/
-
     // Prompt the user for a location in which to create the new project
 	const selectedFolder = await vscode.window.showOpenDialog({
 		title: "Select a folder to create a new Vapor project in",

@@ -35,6 +35,5 @@ export async function execVapor(
     args: string[],
     options: cp.ExecFileOptions = {}
 ): Promise<{ stdout: string; stderr: string }> {
-    // TODO: Use the Vapor Toolbox once it's updated
-    return await execFile("swift", ["run", "vapor", "new", ...args], options);
+    return await execFile("vapor", ["new", ...args], options);
 }

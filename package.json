@@ -3,7 +3,15 @@
   "displayName": "Vapor",
   "description": "Vapor web framework support for Visual Studio Code.",
   "version": "0.0.1",
+  "publisher": "Vapor",
   "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vapor-community/vapor-vscode"
+  },
+  "sponsor": {
+    "url": "https://github.com/sponsors/vapor"
+  },
   "engines": {
     "vscode": "^1.97.0"
   },
