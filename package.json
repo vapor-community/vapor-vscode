@@ -1,6 +1,6 @@
 {
   "name": "vapor-vscode",
-  "displayName": "Vapor",
+  "displayName": "Vapor for VS Code",
   "description": "Vapor web framework support for Visual Studio Code.",
   "version": "0.0.1",
   "publisher": "Vapor",
