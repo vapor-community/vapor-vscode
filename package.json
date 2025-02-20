@@ -2,9 +2,13 @@
   "name": "vapor-vscode",
   "displayName": "Vapor for VS Code",
   "description": "Vapor web framework support for Visual Studio Code.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "Vapor",
-  "icon": "icon.png",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#C80000",
+    "theme": "dark"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/vapor-community/vapor-vscode"
@@ -12,6 +16,14 @@
   "sponsor": {
     "url": "https://github.com/sponsors/vapor"
   },
+  "homepage": "https://vapor.codes",
+  "badges": [
+    {
+      "url": "https://img.shields.io/github/actions/workflow/status/vapor-community/vapor-vscode/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=%23ccc",
+      "href": "https://github.com/vapor-community/vapor-vscode/actions/workflows/test.yml",
+      "description": "Continuous Integration"
+    }
+  ],
   "engines": {
     "vscode": "^1.97.0"
   },
@@ -45,8 +57,8 @@
           ".leaf"
         ],
         "icon": {
-          "light": "./images/leaf-light.png",
-          "dark": "./images/leaf-light.png"
+          "light": "./images/leaf-logo-light.png",
+          "dark": "./images/leaf-logo-dark.png"
         },
         "configuration": "./leaf.language-configuration.json"
       }
@@ -81,7 +93,7 @@
         "vapor-vscode.template.url": {
           "type": "string",
           "default": "",
-          "description": "The URL of a Git repository to use as a template.",
+          "description": "The URL of a Git repository to use as a template for project creation.",
           "order": 1
         },
         "vapor-vscode.template.branch": {
@@ -93,13 +105,13 @@
         "vapor-vscode.template.manifest": {
           "type": "string",
           "default": "",
-          "description": "The path of the manifest file.",
+          "description": "The path of the manifest file of the template.",
           "order": 3
         },
         "vapor-vscode.git.repo": {
           "type": "boolean",
           "default": true,
-          "description": "Add a Git repository to the project folder.",
+          "description": "Add a Git repository to the new project folder.",
           "order": 4
         },
         "vapor-vscode.git.commit": {
