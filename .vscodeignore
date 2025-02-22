@@ -12,3 +12,4 @@ vsc-extension-quickstart.md
 **/*.ts
 **/.vscode-test.*
 **/esbuild.js
+.github/**
