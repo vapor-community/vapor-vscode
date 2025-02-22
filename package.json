@@ -2,7 +2,7 @@
   "name": "vapor-vscode",
   "displayName": "Vapor for VS Code",
   "description": "Vapor web framework support for Visual Studio Code.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "Vapor",
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -22,6 +22,11 @@
       "url": "https://img.shields.io/github/actions/workflow/status/vapor-community/vapor-vscode/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=%23ccc",
       "href": "https://github.com/vapor-community/vapor-vscode/actions/workflows/test.yml",
       "description": "Continuous Integration"
+    },
+    {
+      "url": "https://img.shields.io/codecov/c/github/vapor-community/vapor-vscode?style=plastic&logo=codecov&label=codecov",
+      "href": "https://codecov.io/github/vapor-community/vapor-vscode",
+      "description": "Code Coverage"
     }
   ],
   "engines": {
@@ -31,7 +36,8 @@
   "categories": [
     "Other",
     "Snippets",
-    "Programming Languages"
+    "Programming Languages",
+    "Formatters"
   ],
   "keywords": [
     "vapor",
@@ -87,41 +93,53 @@
         "category": "Vapor"
       }
     ],
-    "configuration": {
-      "title": "Vapor",
-      "properties": {
-        "vapor-vscode.template.url": {
-          "type": "string",
-          "default": "",
-          "description": "The URL of a Git repository to use as a template for project creation.",
-          "order": 1
-        },
-        "vapor-vscode.template.branch": {
-          "type": "string",
-          "default": "",
-          "description": "Template repository branch to use.",
-          "order": 2
-        },
-        "vapor-vscode.template.manifest": {
-          "type": "string",
-          "default": "",
-          "description": "The path of the manifest file of the template.",
-          "order": 3
-        },
-        "vapor-vscode.git.repo": {
-          "type": "boolean",
-          "default": true,
-          "description": "Add a Git repository to the new project folder.",
-          "order": 4
-        },
-        "vapor-vscode.git.commit": {
-          "type": "boolean",
-          "default": true,
-          "description": "Add a first commit to the newly created repo.",
-          "order": 5
+    "configuration": [
+      {
+        "title": "Vapor for VS Code",
+        "properties": {
+          "vapor-vscode.template.url": {
+            "type": "string",
+            "default": "",
+            "description": "The URL of a Git repository to use as a template for project creation.",
+            "order": 1
+          },
+          "vapor-vscode.template.branch": {
+            "type": "string",
+            "default": "",
+            "description": "Template repository branch to use.",
+            "order": 2
+          },
+          "vapor-vscode.template.manifest": {
+            "type": "string",
+            "default": "",
+            "description": "The path of the manifest file of the template.",
+            "order": 3
+          },
+          "vapor-vscode.git.repo": {
+            "type": "boolean",
+            "default": true,
+            "description": "Add a Git repository to the new project folder.",
+            "order": 4
+          },
+          "vapor-vscode.git.commit": {
+            "type": "boolean",
+            "default": true,
+            "description": "Add a first commit to the newly created repo.",
+            "order": 5
+          }
+        }
+      },
+      {
+        "title": "Leaf",
+        "properties": {
+          "leaf.format.enable": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable formatting of Leaf files."
+          }
         }
       }
-    },
+    ],
     "viewsWelcome": [
       {
         "view": "explorer",
@@ -144,7 +162,8 @@
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "vscode:prepublish": "npm run package",
-    "package": "npm run check-types && node esbuild.js --production"
+    "package": "npm run check-types && node esbuild.js --production",
+    "coverage": "vscode-test --coverage --coverage-reporter json"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -156,7 +175,10 @@
     "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.25.0",
     "eslint": "^9.19.0",
-    "typescript": "^5.7.3",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "html-format": "^1.1.7"
   }
 }
