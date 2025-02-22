@@ -20,7 +20,12 @@ jobs:
       with:
         node-version: 18.x
     - run: npm install
-    - run: xvfb-run -a npm test
+    - run: xvfb-run -a npm run coverage
       if: runner.os == 'Linux'
-    - run: npm test
+    - run: npm run coverage
       if: runner.os != 'Linux'
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true

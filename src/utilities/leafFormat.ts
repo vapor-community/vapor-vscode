@@ -39,7 +39,7 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider {
  *
  * @returns the formatted HTML
  */
-function leafPreFormat(html: string): string {
+export function leafPreFormat(html: string): string {
     const lines = html.split("\n");
     const result: string[] = [];
     const regex = /(.*?)(#[A-Za-z]\w*(?:\([^#]*\))?:|#end\w+)(.*)/;
@@ -86,7 +86,7 @@ function leafPreFormat(html: string): string {
  *
  * @returns the formatted HTML
  */
-function leafPostFormat(html: string, indent: string, width: number): string {
+export function leafPostFormat(html: string, indent: string, width: number): string {
     const lines = html.split("\n");
     const result: string[] = [];
     let indentLevel = 0;
