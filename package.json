@@ -22,6 +22,11 @@
       "url": "https://img.shields.io/github/actions/workflow/status/vapor-community/vapor-vscode/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=%23ccc",
       "href": "https://github.com/vapor-community/vapor-vscode/actions/workflows/test.yml",
       "description": "Continuous Integration"
+    },
+    {
+      "url": "https://img.shields.io/codecov/c/github/vapor-community/vapor-vscode?style=plastic&logo=codecov&label=codecov",
+      "href": "https://codecov.io/github/vapor-community/vapor-vscode",
+      "description": "Code Coverage"
     }
   ],
   "engines": {

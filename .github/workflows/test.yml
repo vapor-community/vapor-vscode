@@ -20,6 +20,11 @@ jobs:
       with:
         node-version: 18.x
     - run: npm install
+    - run: xvfb-run -a npm test
+      if: runner.os == 'Linux'
+    - run: npm test
+      if: runner.os != 'Linux'
+    # This will not fail the job if tests fail so we have to npm test separately
     - run: xvfb-run -a npm run coverage
       if: runner.os == 'Linux'
     - run: npm run coverage
