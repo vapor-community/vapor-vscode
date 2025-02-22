@@ -16,7 +16,7 @@ suite("Vapor Extension Test Suite", () => {
 			"--fluent.model.extras.authentication",
 			"--leaf",
 			"--no-jwt",
-			"--deploy", "Error",
+			"--deploy", "Heroku",
 			"--hello", "Ciao, mamma!"
 		];
 
