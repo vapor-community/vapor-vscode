@@ -158,7 +158,7 @@
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "vscode:prepublish": "npm run package",
     "package": "npm run check-types && node esbuild.js --production",
-    "coverage": "vscode-test --coverage"
+    "coverage": "vscode-test --coverage --coverage-reporter json"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
