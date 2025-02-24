@@ -2,7 +2,7 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 import { buildDynamicFlags } from "../commands/manifestVariables";
 import { execFile } from "../utilities/utilities";
-import { leafPreFormat, leafPostFormat } from "../utilities/leafFormat";
+import { leafPreFormat, leafPostFormat } from "../leafFormat";
 
 suite("Vapor Extension Test Suite", () => {
 	vscode.window.showInformationMessage("Start all tests.");

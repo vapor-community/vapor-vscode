@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { createNewProject } from "./commands/createNewProject";
-import { LeafFormatter } from "./utilities/leafFormat";
+import { LeafFormatter } from "./leafFormat";
 
 export function activate(context: vscode.ExtensionContext) {
     // MARK: - Create New Project
