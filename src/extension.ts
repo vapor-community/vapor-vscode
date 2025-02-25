@@ -8,18 +8,25 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(createNewProjectDisposable);
 
     // MARK: - Leaf Formatter
-	let leafFormatterDisposable: vscode.Disposable | undefined;
+	let leafDocumentFormatterDisposable: vscode.Disposable | undefined;
+    let leafRangeFormatterDisposable: vscode.Disposable | undefined;
     const leafFormatter = new LeafFormatter();
 
     const updateLeafFormatter = () => {
         const enableLeafFormatter = vscode.workspace.getConfiguration("leaf").get<boolean>("format.enable");
-        if (leafFormatterDisposable) {
-            leafFormatterDisposable.dispose();
-            leafFormatterDisposable = undefined;
+        if (leafDocumentFormatterDisposable) {
+            leafDocumentFormatterDisposable.dispose();
+            leafDocumentFormatterDisposable = undefined;
+        }
+        if (leafRangeFormatterDisposable) {
+            leafRangeFormatterDisposable.dispose();
+            leafRangeFormatterDisposable = undefined;
         }
         if (enableLeafFormatter) {
-            leafFormatterDisposable = vscode.languages.registerDocumentFormattingEditProvider("leaf", leafFormatter);
-            context.subscriptions.push(leafFormatterDisposable);
+            leafDocumentFormatterDisposable = vscode.languages.registerDocumentFormattingEditProvider("leaf", leafFormatter);
+            context.subscriptions.push(leafDocumentFormatterDisposable);
+            leafRangeFormatterDisposable = vscode.languages.registerDocumentRangeFormattingEditProvider("leaf", leafFormatter);
+            context.subscriptions.push(leafRangeFormatterDisposable);
         }
     };
 

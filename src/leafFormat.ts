@@ -1,13 +1,12 @@
 import * as vscode from "vscode";
 import format from "html-format";
 
-export class LeafFormatter implements vscode.DocumentFormattingEditProvider {
-    public provideDocumentFormattingEdits(
+export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vscode.DocumentRangeFormattingEditProvider {
+    provideDocumentFormattingEdits(
         document: vscode.TextDocument,
         options: vscode.FormattingOptions
-    ): Thenable<vscode.TextEdit[]> {
+    ): vscode.TextEdit[] {
         const { tabSize, insertSpaces } = options;
-
         const indent = insertSpaces ? " ".repeat(tabSize) : "\t";
 
         const { languageId: lang, uri } = document;
@@ -24,9 +23,52 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider {
         const preFormatted = leafPreFormat(text);
         const htmlFormatted = format(preFormatted, indent, width);
 
-        return Promise.resolve([
-            new vscode.TextEdit(range, leafPostFormat(htmlFormatted, indent, width)),
-        ]);
+        return [new vscode.TextEdit(range, leafPostFormat(htmlFormatted, indent, width))];
+    }
+
+    provideDocumentRangeFormattingEdits(
+        document: vscode.TextDocument,
+        range: vscode.Range,
+        options: vscode.FormattingOptions
+    ): vscode.TextEdit[] {
+        const { tabSize, insertSpaces } = options;
+        const indent = insertSpaces ? " ".repeat(tabSize) : "\t";
+
+        const { languageId: lang, uri } = document;
+        const langConfig = vscode.workspace.getConfiguration(`[${lang}]`, uri);
+        const config = vscode.workspace.getConfiguration("editor", uri);
+        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 100);
+
+        const text = document.getText(range);
+        const preFormatted = leafPreFormat(text);
+        const htmlFormatted = format(preFormatted, indent, width);
+        const formatted = leafPostFormat(htmlFormatted, indent, width);
+
+        return [new vscode.TextEdit(range, formatted)];
+    }
+
+    provideDocumentRangesFormattingEdits(
+        document: vscode.TextDocument,
+        ranges: vscode.Range[],
+        options: vscode.FormattingOptions
+    ): vscode.TextEdit[] {
+        const { tabSize, insertSpaces } = options;
+        const indent = insertSpaces ? " ".repeat(tabSize) : "\t";
+
+        const { languageId: lang, uri } = document;
+        const langConfig = vscode.workspace.getConfiguration(`[${lang}]`, uri);
+        const config = vscode.workspace.getConfiguration("editor", uri);
+        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 100);
+
+        const edits: vscode.TextEdit[] = [];
+        for (const range of ranges) {
+            const text = document.getText(range);
+            const preFormatted = leafPreFormat(text);
+            const htmlFormatted = format(preFormatted, indent, width);
+            const formatted = leafPostFormat(htmlFormatted, indent, width);
+            edits.push(new vscode.TextEdit(range, formatted));
+        }
+        return edits;
     }
 }
 
