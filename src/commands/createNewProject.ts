@@ -16,8 +16,10 @@ export async function createNewProject() {
 		return undefined;
 	}
 
+	const folderUri = selectedFolder[0];
+
 	// Prompt the user for the project name
-	const existingNames = await fs.readdir(selectedFolder[0].fsPath, { encoding: "utf-8" });
+	const existingNames = await fs.readdir(folderUri.fsPath, { encoding: "utf-8" });
 	const projectName = await vscode.window.showInputBox({
 		prompt: "Enter a name for your new Vapor project",
 		validateInput(value) {
@@ -39,6 +41,8 @@ export async function createNewProject() {
 		return undefined;
 	}
 
+	const projectUri = vscode.Uri.joinPath(folderUri, projectName);
+
 	// Get the configuration for the Vapor extension and build the flags for the Vapor Toolbox
 	const config = vscode.workspace.getConfiguration("vapor-vscode");
 	const buildFlags: string[] = [];
@@ -56,21 +60,20 @@ export async function createNewProject() {
 	if (!createGitCommit) { buildFlags.push("--no-commit"); }
 
 	try {
+		// Use Vapor Toolbox to initialize the Vapor project
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
 			title: `Creating Vapor project ${projectName}`,
 			cancellable: false
 		}, async (progress, token) => {
 			progress.report({ increment: 0, message: "Collecting template variables..." });
-			const variablesJSONOutput = await execVapor([projectName, "--dump-variables", ...buildFlags], { cwd: selectedFolder[0].fsPath });
+			const variablesJSONOutput = await execVapor([projectName, "--dump-variables", ...buildFlags], { cwd: folderUri.fsPath });
 			const variablesJSON = JSON.parse(variablesJSONOutput.stdout);
 
 			progress.report({ increment: 30, message: "Prompting for variables..." });
 			const userResponses = await promptForVariables(variablesJSON);
 			const dynamicFlags = buildDynamicFlags(userResponses);
 
-			// Use Vapor Toolbox to initialize the Vapor project
-			const projectUri = vscode.Uri.joinPath(selectedFolder[0], projectName);
 			const args = [
 				projectName,
 				"-n",
@@ -81,12 +84,61 @@ export async function createNewProject() {
 			args.push(...dynamicFlags);
 
 			progress.report({ increment: 50, message: "Initializing project..." });
-			await execVapor(args, { cwd: selectedFolder[0].fsPath });
-
-			progress.report({ increment: 20, message: "Opening project..." });
-			vscode.commands.executeCommand("vscode.openFolder", projectUri);
+			await execVapor(args, { cwd: folderUri.fsPath });
 		});
 	} catch (error) {
 		vscode.window.showErrorMessage(`Error creating project: ${error}`);
 	}
+
+	// Prompt the user whether or not they want to open the newly created project
+    const isWorkspaceOpened = !!vscode.workspace.workspaceFolders;
+	const openAfterCreate = config.get("openAfterCreate");
+
+	let action: "open" | "openNewWindow" | "addToWorkspace" | undefined;
+    if (openAfterCreate === "always") {
+        action = "open";
+    } else if (openAfterCreate === "alwaysNewWindow") {
+        action = "openNewWindow";
+    } else if (openAfterCreate === "whenNoFolderOpen" && !isWorkspaceOpened) {
+        action = "open";
+    }
+    
+	if (action === undefined) {
+        let message = `Would you like to open ${projectName}?`;
+        const open = "Open";
+        const openNewWindow = "Open in New Window";
+        const choices = [open, openNewWindow];
+
+        const addToWorkspace = "Add to Workspace";
+        if (isWorkspaceOpened) {
+            message = `Would you like to open ${projectName}, or add it to the current workspace?`;
+            choices.push(addToWorkspace);
+        }
+
+        const result = await vscode.window.showInformationMessage(
+            message,
+            { modal: true, detail: "The default action can be configured in settings" },
+            ...choices
+        );
+        if (result === open) {
+            action = "open";
+        } else if (result === openNewWindow) {
+            action = "openNewWindow";
+        } else if (result === addToWorkspace) {
+            action = "addToWorkspace";
+        }
+    }
+
+    if (action === "open") {
+        await vscode.commands.executeCommand("vscode.openFolder", projectUri, {
+            forceReuseWindow: true,
+        });
+    } else if (action === "openNewWindow") {
+        await vscode.commands.executeCommand("vscode.openFolder", projectUri, {
+            forceNewWindow: true,
+        });
+    } else if (action === "addToWorkspace") {
+        const index = vscode.workspace.workspaceFolders?.length ?? 0;
+        await vscode.workspace.updateWorkspaceFolders(index, 0, { uri: projectUri });
+    }
 }

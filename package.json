@@ -126,6 +126,24 @@
             "default": true,
             "description": "Add a first commit to the newly created repo.",
             "order": 5
+          },
+          "vapor-vscode.openAfterCreateNewProject": {
+            "type": "string",
+            "enum": [
+              "always",
+              "alwaysNewWindow",
+              "whenNoFolderOpen",
+              "prompt"
+            ],
+            "enumDescriptions": [
+              "Always open in current window.",
+              "Always open in a new window.",
+              "Only open in current window when no folder is opened.",
+              "Always prompt for action."
+            ],
+            "default": "prompt",
+            "markdownDescription": "Controls whether to open a Vapor project automatically after creating it.",
+            "order": 6
           }
         }
       },
