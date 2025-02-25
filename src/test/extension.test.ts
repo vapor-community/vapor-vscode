@@ -1,12 +1,9 @@
 import * as assert from "assert";
-import * as vscode from "vscode";
 import { buildDynamicFlags } from "../commands/manifestVariables";
 import { execFile } from "../utilities/utilities";
 import { leafPreFormat, leafPostFormat } from "../leafFormat";
 
 suite("Vapor Extension Test Suite", () => {
-	vscode.window.showInformationMessage("Start all tests.");
-
 	test("buildDynamicFlags", () => {
 		const responses = '{"fluent":{"db":"Postgres (Recommended)","model":{"name":"TestModel","migrate":true,"extras":{"authentication":true}}},"leaf":true,"jwt":false,"deploy":"Heroku","hello":"Ciao, mamma!"}';
 		const expectedFlags = [
