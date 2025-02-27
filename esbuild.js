@@ -4,7 +4,7 @@ const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
 async function main() {
-  const ctx = await esbuild.context({
+  const nodeCtx = await esbuild.context({
     entryPoints: ['src/extension.ts'],
     bundle: true,
     format: 'cjs',
@@ -20,11 +20,29 @@ async function main() {
       esbuildProblemMatcherPlugin
     ]
   });
+
+  const webCtx = await esbuild.context({
+    entryPoints: ['src/web/extension.ts'],
+    bundle: true,
+    format: 'cjs',
+    minify: production,
+    sourcemap: !production,
+    sourcesContent: false,
+    platform: 'browser',
+    outfile: 'dist/web/extension.js',
+    external: ['vscode'],
+    logLevel: 'warning',
+    plugins: [
+      esbuildProblemMatcherPlugin
+    ]
+  });
+
   if (watch) {
-    await ctx.watch();
+    await Promise.all([nodeCtx.watch(), webCtx.watch()]);
   } else {
-    await ctx.rebuild();
-    await ctx.dispose();
+    await Promise.all([nodeCtx.rebuild(), webCtx.rebuild()]);
+    await nodeCtx.dispose();
+    await webCtx.dispose();
   }
 }
 

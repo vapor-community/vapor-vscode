@@ -22,8 +22,9 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
 
         const preFormatted = leafPreFormat(text);
         const htmlFormatted = format(preFormatted, indent, width);
+        const formatted = leafPostFormat(htmlFormatted, indent, width);
 
-        return [new vscode.TextEdit(range, leafPostFormat(htmlFormatted, indent, width))];
+        return [new vscode.TextEdit(range, formatted)];
     }
 
     provideDocumentRangeFormattingEdits(
@@ -40,6 +41,7 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 100);
 
         const text = document.getText(range);
+
         const preFormatted = leafPreFormat(text);
         const htmlFormatted = format(preFormatted, indent, width);
         const formatted = leafPostFormat(htmlFormatted, indent, width);
@@ -63,9 +65,11 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         const edits: vscode.TextEdit[] = [];
         for (const range of ranges) {
             const text = document.getText(range);
+
             const preFormatted = leafPreFormat(text);
             const htmlFormatted = format(preFormatted, indent, width);
             const formatted = leafPostFormat(htmlFormatted, indent, width);
+            
             edits.push(new vscode.TextEdit(range, formatted));
         }
         return edits;
