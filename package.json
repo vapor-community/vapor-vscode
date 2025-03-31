@@ -30,7 +30,7 @@
     }
   ],
   "engines": {
-    "vscode": "^1.97.0"
+    "vscode": "^1.96.2"
   },
   "license": "MIT",
   "categories": [
