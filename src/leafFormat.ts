@@ -180,7 +180,7 @@ export function leafPostFormat(html: string, indent: string, width: number): str
  *
  * @returns An object containing the processed HTML and a map of placeholders to their original content.
  */
-function preserveSpecialTags(html: string): { processedHtml: string, specialTags: Map<string, string> } {
+export function preserveSpecialTags(html: string): { processedHtml: string, specialTags: Map<string, string> } {
     const specialTags = new Map<string, string>();
     let tagId = 0;
     
@@ -211,7 +211,7 @@ function preserveSpecialTags(html: string): { processedHtml: string, specialTags
  *
  * @returns The processed HTML with original tags restored.
  */
-function restoreSpecialTags(html: string, specialTags: Map<string, string>): string {
+export function restoreSpecialTags(html: string, specialTags: Map<string, string>): string {
     let result = html;
     specialTags.forEach((content, placeholder) => {
         result = result.replace(placeholder, content);

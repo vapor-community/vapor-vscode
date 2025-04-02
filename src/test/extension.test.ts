@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { buildDynamicFlags } from "../commands/manifestVariables";
 import { execFile } from "../utilities/utilities";
-import { leafPreFormat, leafPostFormat } from "../leafFormat";
+import { leafPreFormat, leafPostFormat, preserveSpecialTags, restoreSpecialTags } from "../leafFormat";
 
 suite("Vapor Extension Test Suite", () => {
 	test("buildDynamicFlags", () => {
@@ -44,8 +44,21 @@ suite("Vapor Extension Test Suite", () => {
 			"    background-color: red;\n" +
 			"}\n" +
 			"</style>";
-	
-		const preFormatted = leafPreFormat(html);
+		
+		const { processedHtml, specialTags } = preserveSpecialTags(html);
+		const expectedProcessedHtml =  [
+			"<h1>Hello, World!</h1><p>This is a test.</p>",
+			"#if(bool):<p>True</p>#endif",
+			"#if(bool):<p>True</p>#else:<p>False</p>#endif",
+			"",
+			"#if(bool):<p>Test</p>#elseif(otherBool):<p>OtherTest</p>#else:#if(secondBool):<p>SecondTrue</p>#endif#endif",
+			"<!--SPECIAL_TAG_PLACEHOLDER_0-->",
+			"<!--SPECIAL_TAG_PLACEHOLDER_1-->",
+		].join("\n");
+
+		assert.strictEqual(processedHtml, expectedProcessedHtml);
+
+		const preFormatted = leafPreFormat(processedHtml);
 		const expectedPreFormatted = "<h1>Hello, World!</h1><p>This is a test.</p>\n" +
 			"#if(bool):\n" +
 			"<p>True</p>\n" +
@@ -65,19 +78,40 @@ suite("Vapor Extension Test Suite", () => {
 			"<p>SecondTrue</p>\n" +
 			"#endif\n" +
 			"#endif\n" +
-			"<script>\n" +
-			"#if(true): console.log(helloWorld) #endif\n" +
-			"</script>\n" +
-			"<style>\n" +
-			"body {\n" +
-			"    background-color: red;\n" +
-			"}\n" +
-			"</style>";
-	
+			"<!--SPECIAL_TAG_PLACEHOLDER_0-->\n" +
+			"<!--SPECIAL_TAG_PLACEHOLDER_1-->";
+
 		assert.strictEqual(preFormatted, expectedPreFormatted);
 	
 		const postFormatted = leafPostFormat(preFormatted, "    ", 80);
 		const expectedPostFormatted = [
+			"<h1>Hello, World!</h1><p>This is a test.</p>",
+			"#if(bool):",
+			"    <p>True</p>",
+			"#endif",
+			"#if(bool):",
+			"    <p>True</p>",
+			"#else:",
+			"    <p>False</p>",
+			"#endif",
+			"",
+			"#if(bool):",
+			"    <p>Test</p>",
+			"#elseif(otherBool):",
+			"    <p>OtherTest</p>",
+			"#else:",
+			"    #if(secondBool):",
+			"        <p>SecondTrue</p>",
+			"    #endif",
+			"#endif",
+			"<!--SPECIAL_TAG_PLACEHOLDER_0-->",
+			"<!--SPECIAL_TAG_PLACEHOLDER_1-->",
+		].join("\n");
+	
+		assert.strictEqual(postFormatted, expectedPostFormatted);
+
+		const restored = restoreSpecialTags(postFormatted, specialTags);
+		const expectedRestored = [
 			"<h1>Hello, World!</h1><p>This is a test.</p>",
 			"#if(bool):",
 			"    <p>True</p>",
@@ -106,7 +140,7 @@ suite("Vapor Extension Test Suite", () => {
 			"}",
 			"</style>",
 		].join("\n");
-	
-		assert.strictEqual(postFormatted, expectedPostFormatted);
+
+		assert.strictEqual(restored, expectedRestored);
 	});
 });
