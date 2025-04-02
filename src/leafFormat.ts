@@ -12,7 +12,7 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         const { languageId: lang, uri } = document;
         const langConfig = vscode.workspace.getConfiguration(`[${lang}]`, uri);
         const config = vscode.workspace.getConfiguration("editor", uri);
-        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 100);
+        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 140);
 
         const text = document.getText();
         const range = new vscode.Range(
@@ -20,9 +20,13 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
             document.positionAt(text.length)
         );
 
-        const preFormatted = leafPreFormat(text);
+        const { processedHtml, scripts } = preserveScriptTags(text);
+
+        const preFormatted = leafPreFormat(processedHtml);
         const htmlFormatted = format(preFormatted, indent, width);
-        const formatted = leafPostFormat(htmlFormatted, indent, width);
+        const postFormatted = leafPostFormat(htmlFormatted, indent, width);
+
+        const formatted = restoreScriptTags(postFormatted, scripts);
 
         return [new vscode.TextEdit(range, formatted)];
     }
@@ -38,13 +42,17 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         const { languageId: lang, uri } = document;
         const langConfig = vscode.workspace.getConfiguration(`[${lang}]`, uri);
         const config = vscode.workspace.getConfiguration("editor", uri);
-        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 100);
+        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 140);
 
         const text = document.getText(range);
 
-        const preFormatted = leafPreFormat(text);
+        const { processedHtml, scripts } = preserveScriptTags(text);
+
+        const preFormatted = leafPreFormat(processedHtml);
         const htmlFormatted = format(preFormatted, indent, width);
-        const formatted = leafPostFormat(htmlFormatted, indent, width);
+        const postFormatted = leafPostFormat(htmlFormatted, indent, width);
+
+        const formatted = restoreScriptTags(postFormatted, scripts);
 
         return [new vscode.TextEdit(range, formatted)];
     }
@@ -60,15 +68,19 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         const { languageId: lang, uri } = document;
         const langConfig = vscode.workspace.getConfiguration(`[${lang}]`, uri);
         const config = vscode.workspace.getConfiguration("editor", uri);
-        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 100);
+        const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 140);
 
         const edits: vscode.TextEdit[] = [];
         for (const range of ranges) {
             const text = document.getText(range);
 
-            const preFormatted = leafPreFormat(text);
+            const { processedHtml, scripts } = preserveScriptTags(text);
+
+            const preFormatted = leafPreFormat(processedHtml);
             const htmlFormatted = format(preFormatted, indent, width);
-            const formatted = leafPostFormat(htmlFormatted, indent, width);
+            const postFormatted = leafPostFormat(htmlFormatted, indent, width);
+
+            const formatted = restoreScriptTags(postFormatted, scripts);
             
             edits.push(new vscode.TextEdit(range, formatted));
         }
@@ -159,4 +171,42 @@ export function leafPostFormat(html: string, indent: string, width: number): str
     }
 
     return result.join("\n");
+}
+
+/**
+ * Preserves script tags in the HTML by replacing them with placeholders
+ *
+ * @param html the HTML to process
+ *
+ * @returns an object containing the processed HTML and a map of script placeholders to their original content
+ */
+function preserveScriptTags(html: string): { processedHtml: string, scripts: Map<string, string> } {
+    const scripts = new Map<string, string>();
+    let scriptId = 0;
+    
+    // Replace script tags and their content with placeholders
+    const processedHtml = html.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, (match, scriptContent) => {
+        const placeholder = `<!--SCRIPT_PLACEHOLDER_${scriptId}-->`;
+        scripts.set(placeholder, match);
+        scriptId++;
+        return placeholder;
+    });
+    
+    return { processedHtml, scripts };
+}
+
+/**
+ * Restores script tags in the HTML by replacing placeholders with their original content
+ * 
+ * @param html the HTML to process
+ * @param scripts a map of script placeholders to their original content
+ *
+ * @returns the processed HTML with script tags restored
+ */
+function restoreScriptTags(html: string, scripts: Map<string, string>): string {
+    let result = html;
+    scripts.forEach((scriptContent, placeholder) => {
+        result = result.replace(placeholder, scriptContent);
+    });
+    return result;
 }
