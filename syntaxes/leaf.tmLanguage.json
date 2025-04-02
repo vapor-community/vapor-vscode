@@ -102,6 +102,21 @@
             "patterns": [
                 { "include": "#tags" }
             ]
+        },
+        "source.js": {
+            "patterns": [
+                { "include": "#tags" }
+            ]
+        },
+        "string.quoted.double.js": {
+            "patterns": [
+                { "include": "#tags" }
+            ]
+        },
+        "string.quoted.single.js": {
+            "patterns": [
+                { "include": "#tags" }
+            ]
         }
     },
     "scopeName": "text.html.leaf",
