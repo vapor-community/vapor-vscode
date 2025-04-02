@@ -20,13 +20,13 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
             document.positionAt(text.length)
         );
 
-        const { processedHtml, scripts } = preserveScriptTags(text);
+        const { processedHtml, specialTags } = preserveSpecialTags(text);
 
         const preFormatted = leafPreFormat(processedHtml);
         const htmlFormatted = format(preFormatted, indent, width);
         const postFormatted = leafPostFormat(htmlFormatted, indent, width);
 
-        const formatted = restoreScriptTags(postFormatted, scripts);
+        const formatted = restoreSpecialTags(postFormatted, specialTags);
 
         return [new vscode.TextEdit(range, formatted)];
     }
@@ -46,13 +46,13 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
 
         const text = document.getText(range);
 
-        const { processedHtml, scripts } = preserveScriptTags(text);
+        const { processedHtml, specialTags } = preserveSpecialTags(text);
 
         const preFormatted = leafPreFormat(processedHtml);
         const htmlFormatted = format(preFormatted, indent, width);
         const postFormatted = leafPostFormat(htmlFormatted, indent, width);
 
-        const formatted = restoreScriptTags(postFormatted, scripts);
+        const formatted = restoreSpecialTags(postFormatted, specialTags);
 
         return [new vscode.TextEdit(range, formatted)];
     }
@@ -74,13 +74,13 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         for (const range of ranges) {
             const text = document.getText(range);
 
-            const { processedHtml, scripts } = preserveScriptTags(text);
+            const { processedHtml, specialTags } = preserveSpecialTags(text);
 
             const preFormatted = leafPreFormat(processedHtml);
             const htmlFormatted = format(preFormatted, indent, width);
             const postFormatted = leafPostFormat(htmlFormatted, indent, width);
 
-            const formatted = restoreScriptTags(postFormatted, scripts);
+            const formatted = restoreSpecialTags(postFormatted, specialTags);
             
             edits.push(new vscode.TextEdit(range, formatted));
         }
@@ -89,11 +89,11 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
 }
 
 /**
- * Puts Leaf tags that have a body on their own line
+ * Puts Leaf tags that have a body on their own line.
  *
- * @param html the HTML to format
+ * @param html The HTML to format.
  *
- * @returns the formatted HTML
+ * @returns The formatted HTML.
  */
 export function leafPreFormat(html: string): string {
     const lines = html.split("\n");
@@ -134,13 +134,13 @@ export function leafPreFormat(html: string): string {
 }
 
 /**
- * Fixes the indentation of Leaf tags
+ * Fixes the indentation of Leaf tags.
  *
- * @param html the HTML to format
- * @param indent the string to use for indentation
- * @param width the max width of the document
+ * @param html The HTML to format.
+ * @param indent The string to use for indentation.
+ * @param width The max width of the document.
  *
- * @returns the formatted HTML
+ * @returns The formatted HTML.
  */
 export function leafPostFormat(html: string, indent: string, width: number): string {
     const lines = html.split("\n");
@@ -174,39 +174,47 @@ export function leafPostFormat(html: string, indent: string, width: number): str
 }
 
 /**
- * Preserves script tags in the HTML by replacing them with placeholders
+ * Preserves `<script>` and `<style>` tags in the HTML by replacing them with placeholders.
  *
- * @param html the HTML to process
+ * @param html The HTML to process.
  *
- * @returns an object containing the processed HTML and a map of script placeholders to their original content
+ * @returns An object containing the processed HTML and a map of placeholders to their original content.
  */
-function preserveScriptTags(html: string): { processedHtml: string, scripts: Map<string, string> } {
-    const scripts = new Map<string, string>();
-    let scriptId = 0;
+function preserveSpecialTags(html: string): { processedHtml: string, specialTags: Map<string, string> } {
+    const specialTags = new Map<string, string>();
+    let tagId = 0;
     
-    // Replace script tags and their content with placeholders
-    const processedHtml = html.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, (match, scriptContent) => {
-        const placeholder = `<!--SCRIPT_PLACEHOLDER_${scriptId}-->`;
-        scripts.set(placeholder, match);
-        scriptId++;
+    // Replace <script> tags and their content with placeholders
+    let processedHtml = html.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, (match) => {
+        const placeholder = `<!--SPECIAL_TAG_PLACEHOLDER_${tagId}-->`;
+        specialTags.set(placeholder, match);
+        tagId++;
         return placeholder;
     });
     
-    return { processedHtml, scripts };
+    // Replace <style> tags and their content with placeholders
+    processedHtml = processedHtml.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gi, (match) => {
+        const placeholder = `<!--SPECIAL_TAG_PLACEHOLDER_${tagId}-->`;
+        specialTags.set(placeholder, match);
+        tagId++;
+        return placeholder;
+    });
+    
+    return { processedHtml, specialTags };
 }
 
 /**
- * Restores script tags in the HTML by replacing placeholders with their original content
+ * Restores `<script>` and `<style>` tags in the HTML by replacing placeholders with their original content.
  * 
- * @param html the HTML to process
- * @param scripts a map of script placeholders to their original content
+ * @param html The HTML to process.
+ * @param specialTags A map of placeholders to their original content.
  *
- * @returns the processed HTML with script tags restored
+ * @returns The processed HTML with original tags restored.
  */
-function restoreScriptTags(html: string, scripts: Map<string, string>): string {
+function restoreSpecialTags(html: string, specialTags: Map<string, string>): string {
     let result = html;
-    scripts.forEach((scriptContent, placeholder) => {
-        result = result.replace(placeholder, scriptContent);
+    specialTags.forEach((content, placeholder) => {
+        result = result.replace(placeholder, content);
     });
     return result;
 }

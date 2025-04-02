@@ -35,7 +35,15 @@ suite("Vapor Extension Test Suite", () => {
 			"#if(bool):<p>True</p>#endif\n" +
 			"#if(bool):<p>True</p>#else:<p>False</p>#endif\n" +
 			"\n" +
-			"#if(bool):<p>Test</p>#elseif(otherBool):<p>OtherTest</p>#else:#if(secondBool):<p>SecondTrue</p>#endif#endif";
+			"#if(bool):<p>Test</p>#elseif(otherBool):<p>OtherTest</p>#else:#if(secondBool):<p>SecondTrue</p>#endif#endif\n" +
+			"<script>\n" +
+			"#if(true): console.log(helloWorld) #endif\n" +
+			"</script>\n" +
+			"<style>\n" +
+			"body {\n" +
+			"    background-color: red;\n" +
+			"}\n" +
+			"</style>";
 	
 		const preFormatted = leafPreFormat(html);
 		const expectedPreFormatted = "<h1>Hello, World!</h1><p>This is a test.</p>\n" +
@@ -56,7 +64,15 @@ suite("Vapor Extension Test Suite", () => {
 			"#if(secondBool):\n" +
 			"<p>SecondTrue</p>\n" +
 			"#endif\n" +
-			"#endif";
+			"#endif\n" +
+			"<script>\n" +
+			"#if(true): console.log(helloWorld) #endif\n" +
+			"</script>\n" +
+			"<style>\n" +
+			"body {\n" +
+			"    background-color: red;\n" +
+			"}\n" +
+			"</style>";
 	
 		assert.strictEqual(preFormatted, expectedPreFormatted);
 	
@@ -81,6 +97,14 @@ suite("Vapor Extension Test Suite", () => {
 			"        <p>SecondTrue</p>",
 			"    #endif",
 			"#endif",
+			"<script>",
+			"#if(true): console.log(helloWorld) #endif",
+			"</script>",
+			"<style>",
+			"body {",
+			"    background-color: red;",
+			"}",
+			"</style>",
 		].join("\n");
 	
 		assert.strictEqual(postFormatted, expectedPostFormatted);
