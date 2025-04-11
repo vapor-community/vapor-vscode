@@ -120,7 +120,18 @@ export function leafPreFormat(html: string): string {
                 const tag = match[2];
                 const rest = match[3];
 
-                if (prefix.trim().length > 0) {
+                const trimmedPrefix = prefix.trim();
+
+                // Check if the Leaf tag is inside a HTML tag
+                const openTags = trimmedPrefix.split('<').length - 1;
+                const closeTags = trimmedPrefix.split('>').length - 1;
+                if (openTags > closeTags) {
+                    // If the tag is inside a HTML tag, just add the line as is
+                    result.push(remaining);
+                    break;
+                } 
+
+                if (trimmedPrefix.length > 0) {
                     result.push(prefix);
                 }
 

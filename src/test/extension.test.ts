@@ -85,4 +85,12 @@ suite("Vapor Extension Test Suite", () => {
 	
 		assert.strictEqual(postFormatted, expectedPostFormatted, "Post formatted HTML does not match expected output.");
 	});
+
+	test("Format Leaf tags inside HTML tags", () => {
+		const html = '<div class="container #if(bool): test-class #endif card">';
+
+		const preFormatted = leafPreFormat(html);
+
+		assert.strictEqual(preFormatted.trim(), html.trim(), "Pre formatted HTML does not match expected output.");
+	});
 });

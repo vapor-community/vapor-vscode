@@ -5,7 +5,7 @@ This extension adds support for the Vapor web framework to Visual Studio Code.
 ## Features
 
 * 💧 Create new Vapor projects
-* 🍃 Language support for the Leaf templating language
+* 🍃 Language support and formatter for the Leaf templating language
 * ✏️ Code snippets for common Vapor and Leaf code patterns
 
 ## Requirements
@@ -15,4 +15,4 @@ You can install it by following the instructions on the [Toolbox page](https://g
 
 ## Known Issues
 
-Syntax highlighting of Leaf tags embedded in HTML attributes has some limitations.
+Syntax highlighting and formatting of Leaf tags embedded in HTML attributes has some limitations.
