@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import format from "html-format";
+import beautify from "js-beautify";
 
 export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vscode.DocumentRangeFormattingEditProvider {
     provideDocumentFormattingEdits(
@@ -20,15 +20,17 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
             document.positionAt(text.length)
         );
 
-        const { processedHtml, specialTags } = preserveSpecialTags(text);
+        const formatterOptions = {
+            indent_with_tabs: !insertSpaces,
+            indent_size: tabSize,
+            wrap_line_length: width,
+        };
 
-        const preFormatted = leafPreFormat(processedHtml);
-        const htmlFormatted = format(preFormatted, indent, width);
+        const preFormatted = leafPreFormat(text);
+        const htmlFormatted = beautify.html(preFormatted, formatterOptions);
         const postFormatted = leafPostFormat(htmlFormatted, indent, width);
 
-        const formatted = restoreSpecialTags(postFormatted, specialTags);
-
-        return [new vscode.TextEdit(range, formatted)];
+        return [new vscode.TextEdit(range, postFormatted)];
     }
 
     provideDocumentRangeFormattingEdits(
@@ -46,15 +48,17 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
 
         const text = document.getText(range);
 
-        const { processedHtml, specialTags } = preserveSpecialTags(text);
+        const formatterOptions = {
+            indent_with_tabs: !insertSpaces,
+            indent_size: tabSize,
+            wrap_line_length: width,
+        };
 
-        const preFormatted = leafPreFormat(processedHtml);
-        const htmlFormatted = format(preFormatted, indent, width);
+        const preFormatted = leafPreFormat(text);
+        const htmlFormatted = beautify.html(preFormatted, formatterOptions);
         const postFormatted = leafPostFormat(htmlFormatted, indent, width);
 
-        const formatted = restoreSpecialTags(postFormatted, specialTags);
-
-        return [new vscode.TextEdit(range, formatted)];
+        return [new vscode.TextEdit(range, postFormatted)];
     }
 
     provideDocumentRangesFormattingEdits(
@@ -70,19 +74,21 @@ export class LeafFormatter implements vscode.DocumentFormattingEditProvider, vsc
         const config = vscode.workspace.getConfiguration("editor", uri);
         const width = langConfig["editor.wordWrapColumn"] || config.get("wordWrapColumn", 140);
 
+        const formatterOptions = {
+            indent_with_tabs: !insertSpaces,
+            indent_size: tabSize,
+            wrap_line_length: width,
+        };
+
         const edits: vscode.TextEdit[] = [];
         for (const range of ranges) {
             const text = document.getText(range);
 
-            const { processedHtml, specialTags } = preserveSpecialTags(text);
-
-            const preFormatted = leafPreFormat(processedHtml);
-            const htmlFormatted = format(preFormatted, indent, width);
+            const preFormatted = leafPreFormat(text);
+            const htmlFormatted = beautify.html(preFormatted, formatterOptions);
             const postFormatted = leafPostFormat(htmlFormatted, indent, width);
-
-            const formatted = restoreSpecialTags(postFormatted, specialTags);
             
-            edits.push(new vscode.TextEdit(range, formatted));
+            edits.push(new vscode.TextEdit(range, postFormatted));
         }
         return edits;
     }
@@ -102,7 +108,7 @@ export function leafPreFormat(html: string): string {
 
     for (const line of lines) {
         if (line.trim() === "") {
-            result.push(line);
+            result.push(""); // If the line is empty, just add an empty line
             continue;
         }
 
@@ -145,76 +151,33 @@ export function leafPreFormat(html: string): string {
 export function leafPostFormat(html: string, indent: string, width: number): string {
     const lines = html.split("\n");
     const result: string[] = [];
-    let indentLevel = 0;
+    let leafIndentLevel = 0; // Indicates the number of Leaf tags that are open
 
     for (const line of lines) {
-        const match = line.match(/^\s*/);
-        const initialIndent = match ? match[0] : "";
+        const existingIndentMatch = line.match(/^(\s*)(.*)/);
+        const existingIndent = existingIndentMatch ? existingIndentMatch[1] : "";
+        const content = existingIndentMatch ? existingIndentMatch[2] : line;
 
-        const trimmedLine = line.trim();
-
-        if (trimmedLine === "") {
-            result.push(line);
-            continue;
+        // If in this line there is a closing tag, reduce the indentation level
+        if (content.startsWith("#end") || content.startsWith("#else") || content.startsWith("#elseif")) {
+            leafIndentLevel = Math.max(0, leafIndentLevel - 1);
         }
 
-        if (trimmedLine.startsWith("#else") || trimmedLine.startsWith("#elseif") || trimmedLine.startsWith("#end")) {
-            indentLevel--;
+        // Add the line with the appropriate indentation
+        if (content.length === 0) {
+            result.push(""); // If the line is empty, just add an empty line
+        } else {
+            // Calculate the indentation for the current line
+            const newIndent = indent.repeat(leafIndentLevel);
+
+            result.push(existingIndent + newIndent + content);
         }
 
-        const leafIndent = indent.repeat(Math.max(0, indentLevel));
-        result.push(initialIndent + leafIndent + trimmedLine);
-
-        if (trimmedLine.startsWith("#") && trimmedLine.endsWith(":")) {
-            indentLevel++;
+        // If in this line there is an opening tag, increase the indentation level
+        if (content.startsWith("#") && content.endsWith(":")) {
+            leafIndentLevel++;
         }
     }
 
     return result.join("\n");
-}
-
-/**
- * Preserves `<script>` and `<style>` tags in the HTML by replacing them with placeholders.
- *
- * @param html The HTML to process.
- *
- * @returns An object containing the processed HTML and a map of placeholders to their original content.
- */
-export function preserveSpecialTags(html: string): { processedHtml: string, specialTags: Map<string, string> } {
-    const specialTags = new Map<string, string>();
-    let tagId = 0;
-    
-    // Replace <script> tags and their content with placeholders
-    let processedHtml = html.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, (match) => {
-        const placeholder = `<!--SPECIAL_TAG_PLACEHOLDER_${tagId}-->`;
-        specialTags.set(placeholder, match);
-        tagId++;
-        return placeholder;
-    });
-    
-    // Replace <style> tags and their content with placeholders
-    processedHtml = processedHtml.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gi, (match) => {
-        const placeholder = `<!--SPECIAL_TAG_PLACEHOLDER_${tagId}-->`;
-        specialTags.set(placeholder, match);
-        tagId++;
-        return placeholder;
-    });
-    
-    return { processedHtml, specialTags };
-}
-
-/**
- * Restores `<script>` and `<style>` tags in the HTML by replacing placeholders with their original content.
- * 
- * @param html The HTML to process.
- * @param specialTags A map of placeholders to their original content.
- *
- * @returns The processed HTML with original tags restored.
- */
-export function restoreSpecialTags(html: string, specialTags: Map<string, string>): string {
-    let result = html;
-    specialTags.forEach((content, placeholder) => {
-        result = result.replace(placeholder, content);
-    });
-    return result;
 }
