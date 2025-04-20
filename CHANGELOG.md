@@ -5,6 +5,12 @@ All notable changes to the "vapor-vscode" extension will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.8] - 2025-04-20
+
+### Fixed
+
+- Leaf tags embedded in HTML attributes are now highlighted correctly.
+
 ## [0.0.7] - 2025-04-11
 
 ### Fixed
