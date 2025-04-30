@@ -2,7 +2,7 @@
   "name": "vapor-vscode",
   "displayName": "Vapor for VS Code",
   "description": "Vapor web framework support for Visual Studio Code.",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "Vapor",
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -159,6 +159,11 @@
         }
       }
     ],
+    "configurationDefaults": {
+      "emmet.includeLanguages": {
+        "leaf": "html"
+      }
+    },
     "viewsWelcome": [
       {
         "view": "explorer",
