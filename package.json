@@ -2,7 +2,7 @@
   "name": "vapor-vscode",
   "displayName": "Vapor for VS Code",
   "description": "Vapor web framework support for Visual Studio Code.",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "publisher": "Vapor",
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -16,7 +16,7 @@
   "sponsor": {
     "url": "https://github.com/sponsors/vapor"
   },
-  "homepage": "https://vapor.codes",
+  "homepage": "https://www.vapor.codes",
   "badges": [
     {
       "url": "https://img.shields.io/github/actions/workflow/status/vapor-community/vapor-vscode/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=%23ccc",
@@ -177,7 +177,8 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test",
+    "test": "vscode-test && npm run grammar-test",
+    "grammar-test": "vscode-tmgrammar-test \"src/test/syntaxes/Test.test.leaf\"",
     "compile": "npm run check-types && npm run lint && node esbuild.js",
     "check-types": "tsc --noEmit",
     "watch": "npm-run-all -p watch:*",
@@ -199,7 +200,8 @@
     "esbuild": "^0.25.0",
     "eslint": "^9.19.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vscode-tmgrammar-test": "^0.1.3"
   },
   "dependencies": {
     "js-beautify": "^1.15.4"

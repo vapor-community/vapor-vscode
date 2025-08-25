@@ -1,0 +1,39 @@
+#comment: SYNTAX TEST "text.html.leaf"
+#endcomment
+
+#extend("template"):
+#comment: <- keyword.control.leaf
+#endcomment
+
+    #export("body"):
+#comment:   ^^^^^^ string.quoted.double.leaf.inner
+#endcomment
+
+        #comment:
+#comment: <~~~~~~~~~------- entity.name.tag.leaf
+#endcomment
+            Welcome to the Vapor VSCode extension!
+        #endcomment
+
+        #if(count(users) > 0):
+#comment:  ^ punctuation.definition.arguments.begin.leaf
+#endcomment
+
+            #for(user in users):
+                <p style="color: #customColor(user.color, customTag(), "Light");">
+                    #(user.name) - #(user.age)
+                </p>
+            #endfor
+
+        #elseif(contains(users, loggedIn)):
+#comment:                                 ^ meta.embedded.tag.leaf
+#endcomment
+            <p>Welcome back, #(loggedIn.name)!</p>
+#comment:                                   ^ punctuation.definition.arguments.end.leaf
+#endcomment
+        #elseif(title == "Welcome"):
+            <p>Welcome to our website!</p>
+        #endif
+
+    #endexport
+#endextend
