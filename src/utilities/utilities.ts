@@ -15,11 +15,15 @@ export async function execFile(
     options: cp.ExecFileOptions = {}
 ): Promise<{ stdout: string; stderr: string }> {
     return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
+        options = {
+            ...options,
+            maxBuffer: options.maxBuffer ?? 1024 * 1024 * 64, // 64MB
+        };
         cp.execFile(executable, args, options, (error, stdout, stderr) => {
             if (error) {
                 reject(error);
             }
-            resolve({ stdout, stderr });
+            resolve({ stdout: stdout.toString(), stderr: stderr.toString() });
         });
     });
 }
