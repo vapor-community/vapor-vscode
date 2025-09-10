@@ -1,0 +1,74 @@
+name: Bug Report
+description: Report an issue in Vapor for VS Code
+type: 'Bug'
+body:
+  - type: markdown
+    attributes: 
+      value: |
+        🚀 Thank you for contributing!
+  - type: input
+    id: summary
+    attributes:
+      label: Describe the issue
+      description: 'A clear and concise one-line description of the problem.'
+      placeholder: 'Summary'
+    validations:
+      required: true
+  - type: input
+    id: vapor-vscode-version
+    attributes:
+      label: Vapor for VS Code version
+      description: 'The version of Vapor for VS Code you are using. This can be found in the Extensions sidebar in VS Code.'
+      placeholder: '0.x.x'
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: Operating system and version
+      description: 'The name and version of the operating system you are running Vapor for VS Code on, such as "macOS 14.3" or "Ubuntu Linux 22.04".'
+      placeholder: 'GLaDOS 21.12.07'
+    validations:
+      required: true
+  - type: input
+    id: vscode-version
+    attributes:
+      label: Visual Studio Code version
+      description: 'The version of Visual Studio Code you are using. This can be found in the Help menu under "About".'
+      placeholder: '1.96.2'
+    validations:
+      required: true
+  - type: input
+    id: toolbox-version
+    attributes:
+      label: Vapor Toolbox version
+      description: 'The version of the Vapor Toolbox you have installed (if applicable). Try vapor --version.'
+      placeholder: 'toolbox: 19.2.0'
+    validations:
+      required: false
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Tell us how to reproduce this issue. Please provide as much detail as possible; if we can't recreate
+        it, fixing it gets a lot harder!
+      placeholder: |
+        1. 
+        2. 
+        ...
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Outcome
+      description: |
+        Describe the incorrect behavior and the difference between it and the expected behavior in as much detail as possible.
+      placeholder: |
+        My CPU caught fire, but the flames were at least twice the size they were supposed to be.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: 'Please include any additional information you think might be helpful.'
+      placeholder: |
+        My computer is an M3, but I'm running VS Code in an Intel Docker container.
