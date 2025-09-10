@@ -1,0 +1,36 @@
+name: Feature Request
+description: Suggest an idea for Vapor for VS Code
+type: 'Feature'
+body:
+  - type: markdown
+    attributes: 
+      value: |
+        🚀 Thank you for contributing!
+  - type: input
+    id: problem
+    attributes:
+      label: Please summarize your feature request
+      description: |
+        A clear and concise description of the what the problem is.
+      placeholder: |
+        My interociter can't fly me back to Earth.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the functionality you're seeking in more detail
+      description: |
+        A clear and concise description of what you want to accomplish.
+      placeholder: |
+        My interociter should include magic spaceflight capabilities.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Have you considered any alternatives?
+      description: |
+        A clear and concise description of any alternative solutions or features you've considered.
+      placeholder: |
+        I tried flying the Satellite of Love, but Crow got in the way.
