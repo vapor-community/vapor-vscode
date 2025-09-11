@@ -192,7 +192,7 @@
     "@types/js-beautify": "^1.14.3",
     "@types/mocha": "^10.0.10",
     "@types/node": "24.x",
-    "@types/vscode": "^1.103.0",
+    "@types/vscode": "^1.104.0",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.22.0",
     "@vscode/test-cli": "^0.0.11",
