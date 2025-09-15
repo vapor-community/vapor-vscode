@@ -98,24 +98,11 @@
         }
     },
     "injections": {
-        "string.quoted.double.html": {
+        "L:text.html.leaf": {
             "patterns": [
-                { "include": "#tags" }
-            ]
-        },
-        "source.js": {
-            "patterns": [
-                { "include": "#tags" }
-            ]
-        },
-        "string.quoted.double.js": {
-            "patterns": [
-                { "include": "#tags" }
-            ]
-        },
-        "string.quoted.single.js": {
-            "patterns": [
-                { "include": "#tags" }
+                {
+                    "include": "#tags"
+                }
             ]
         }
     },
