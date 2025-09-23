@@ -1,0 +1,52 @@
+{
+    "Migration": {
+        "prefix": "migration",
+        "body": [
+            "struct MyModelMigration: AsyncMigration {",
+            "\tfunc prepare(on database: any Database) async throws {",
+            "\t\ttry await database.schema(\"${1:my_model}\")",
+            "\t\t\t.id()",
+            "\t\t\t.field(\"${2:field_name}\", .${3:fieldtype})",
+            "\t\t\t.create()",
+            "\t}",
+            "",
+            "\tfunc revert(on: database: any Database) async throws {",
+            "\t\ttry await database.schema(\"${1:my_model}\").delete()",
+            "\t}",
+            "}"
+        ],
+        "description": "A Fluent parent relation property"
+    },
+    "Model": {
+        "prefix": "model",
+        "body": [
+            "final class ${1:MyModel}: Model, @unchecked Sendable {",
+            "\tstatic var name: String { \"${2:my_models}\" }",
+            "",
+            "\t@ID",
+            "\tvar id: UUID?",
+            "",
+            "\t${3:Properties}",
+            "",
+            "\tinit() {}",
+            "}"
+        ],
+        "description": "Basic Fluent model declaration"
+    },
+    "Field Property": {
+        "prefix": "field",
+        "body": [
+            "\t@Field(key: \"${1:field_name}\")",
+            "\tvar ${2:property_name}: ${3:PropertyType}"
+        ],
+        "description": "A plain Fluent model property"
+    },
+    "Parent Property": {
+        "prefix": "parent",
+        "body": [
+            "\t@Parent(key: \"${1:model_name}_id\")",
+            "\tvar ${2:modelName}: ${3:ModelType}"
+        ],
+        "description": "A Fluent parent relation property"
+    },
+}
