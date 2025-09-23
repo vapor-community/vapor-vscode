@@ -6,16 +6,16 @@
             "\tfunc prepare(on database: any Database) async throws {",
             "\t\ttry await database.schema(\"${2:my_models}\")",
             "\t\t\t.id()",
-            "\t\t\t.field(\"${3:field_name}\", .${4:fieldtype})",
+            "\t\t\t.field(\"${3:field_name}\", .${4:fieldType})",
             "\t\t\t.create()",
             "\t}",
             "",
-            "\tfunc revert(on: database: any Database) async throws {",
+            "\tfunc revert(on database: any Database) async throws {",
             "\t\ttry await database.schema(\"${2:my_models}\").delete()",
             "\t}",
             "}"
         ],
-        "description": "A Fluent parent relation property"
+        "description": "Basic Fluent migration declaration"
     },
     "Model": {
         "prefix": "model",
@@ -36,16 +36,16 @@
     "Field Property": {
         "prefix": "field",
         "body": [
-            "\t@Field(key: \"${1:field_name}\")",
-            "\tvar ${2:property_name}: ${3:PropertyType}"
+            "@Field(key: \"${1:field_name}\")",
+            "var ${2:propertyName}: ${3:PropertyType}"
         ],
         "description": "A plain Fluent model property"
     },
     "Parent Property": {
         "prefix": "parent",
         "body": [
-            "\t@Parent(key: \"${1:model_name}_id\")",
-            "\tvar ${2:modelName}: ${3:ModelType}"
+            "@Parent(key: \"${1:model_name}_id\")",
+            "var ${2:modelName}: ${3:ModelType}"
         ],
         "description": "A Fluent parent relation property"
     },
