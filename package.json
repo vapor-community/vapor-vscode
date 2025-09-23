@@ -83,6 +83,10 @@
         "path": "./snippets/vapor.code-snippets"
       },
       {
+        "language": "swift",
+        "path": "./snippets/fluent.code-snippets"
+      },
+      {
         "language": "leaf",
         "path": "./snippets/leaf.code-snippets"
       }

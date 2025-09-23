@@ -16,7 +16,7 @@ You can also use this extension when running VS Code in the browser to have Leaf
 
     <img src="https://raw.githubusercontent.com/vapor-community/vapor-vscode/main/images/leafFormatting.gif" width="630" height="430">
 
-*   ✏️ Code snippets for common Vapor and Leaf code patterns
+*   ✏️ Code snippets for common Vapor, Fluent, and Leaf code patterns
 
 ## Requirements
 
